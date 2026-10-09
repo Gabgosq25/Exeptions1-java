@@ -5,7 +5,7 @@ import model.exceptions.DomainException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import model.exceptions.DomainException;
+
 
 
 public class Reservation {
