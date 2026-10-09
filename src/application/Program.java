@@ -1,26 +1,27 @@
 package application;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
+
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Program {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        System.out.print("Room number: ");
-        int roomNumber = sc.nextInt();
-        System.out.print("Check-in date (dd/MM/yyyy): ");
-        LocalDate checkIn = LocalDate.parse(sc.next(), fmt);
-        System.out.print("Check-out date (dd/MM/yyyy): ");
-        LocalDate checkOut = LocalDate.parse(sc.next(), fmt);
+        try {
+            System.out.print("Room number: ");
+            int roomNumber = sc.nextInt();
+            System.out.print("Check-in date (dd/MM/yyyy): ");
+            LocalDate checkIn = LocalDate.parse(sc.next(), fmt);
+            System.out.print("Check-out date (dd/MM/yyyy): ");
+            LocalDate checkOut = LocalDate.parse(sc.next(), fmt);
 
-        if (!checkOut.isAfter(checkIn)) {
-            System.out.println("Error in reservation: Check-out date must be after check-in date");
-        } else {
             Reservation reservation = new Reservation(roomNumber, checkIn, checkOut);
             System.out.println("Reservation: " + reservation);
 
@@ -31,16 +32,16 @@ public class Program {
             System.out.print("Check-out date (dd/MM/yyyy): ");
             checkOut = LocalDate.parse(sc.next(), fmt);
 
-            String error = reservation.updateDates(checkIn, checkOut);
-            if (error != null) {
-                System.out.println("Error in reservation: " + error);
-            } else {
-                System.out.println("Reservation: " + reservation);
-            }
-
-
+            reservation.updateDates(checkIn, checkOut);
+            System.out.println("Reservation: " + reservation);
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+        } catch (DomainException e) {
+            System.out.println("Error in reservation: " + e.getMessage());
         }
-
+        catch (RuntimeException e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        }
         sc.close();
 
     }
